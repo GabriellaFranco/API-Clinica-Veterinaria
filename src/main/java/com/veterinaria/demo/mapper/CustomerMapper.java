@@ -5,6 +5,8 @@ import com.veterinaria.demo.dto.customer.GetCustomerDTO;
 import com.veterinaria.demo.entity.Customer;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class CustomerMapper {
 
@@ -12,6 +14,7 @@ public class CustomerMapper {
         return Customer.builder()
                 .name(customerDTO.name())
                 .phone(customerDTO.phone())
+                .creationDate(LocalDate.now())
                 .cpf(customerDTO.cpf())
                 .build();
     }

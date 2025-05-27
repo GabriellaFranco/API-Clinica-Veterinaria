@@ -7,6 +7,8 @@ import com.veterinaria.demo.entity.Animal;
 import com.veterinaria.demo.entity.Customer;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class AnimalMapper {
 
@@ -15,6 +17,7 @@ public class AnimalMapper {
                 .name(animalDTO.name())
                 .age(animalDTO.age())
                 .breed(animalDTO.breed())
+                .creationDate(LocalDate.now())
                 .species(animalDTO.species())
                 .tutor(tutor)
                 .build();
