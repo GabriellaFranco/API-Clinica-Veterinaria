@@ -25,6 +25,9 @@ public class User {
     private String email;
     private String password;
 
+    @Column(nullable = true)
+    private String crmv_number;
+
     @Enumerated(EnumType.STRING)
     private UserProfile profile;
 
