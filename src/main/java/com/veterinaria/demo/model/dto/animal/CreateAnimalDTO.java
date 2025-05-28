@@ -1,8 +1,6 @@
-package com.veterinaria.demo.dto.animal;
+package com.veterinaria.demo.model.dto.animal;
 
-import com.veterinaria.demo.entity.Customer;
 import com.veterinaria.demo.enums.AnimalSpecies;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;

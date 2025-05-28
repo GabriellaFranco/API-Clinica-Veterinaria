@@ -1,8 +1,8 @@
-package com.veterinaria.demo.mapper;
+package com.veterinaria.demo.model.mapper;
 
-import com.veterinaria.demo.dto.user.CreateUserDTO;
-import com.veterinaria.demo.dto.user.GetUserDTO;
-import com.veterinaria.demo.entity.User;
+import com.veterinaria.demo.model.dto.user.CreateUserDTO;
+import com.veterinaria.demo.model.dto.user.GetUserDTO;
+import com.veterinaria.demo.model.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

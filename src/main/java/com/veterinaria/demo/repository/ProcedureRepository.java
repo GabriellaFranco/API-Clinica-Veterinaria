@@ -1,10 +1,9 @@
 package com.veterinaria.demo.repository;
 
-import com.veterinaria.demo.model.entity.Animal;
+import com.veterinaria.demo.model.entity.Procedure;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AnimalRepository extends JpaRepository<Animal, Long> {
-
+public interface ProcedureRepository extends JpaRepository<Procedure, Long> {
 }

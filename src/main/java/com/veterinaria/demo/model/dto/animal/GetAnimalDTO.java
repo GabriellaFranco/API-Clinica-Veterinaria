@@ -1,4 +1,4 @@
-package com.veterinaria.demo.dto.animal;
+package com.veterinaria.demo.model.dto.animal;
 
 import com.veterinaria.demo.enums.AnimalSpecies;
 import lombok.Builder;

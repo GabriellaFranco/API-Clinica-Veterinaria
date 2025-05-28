@@ -1,10 +1,10 @@
-package com.veterinaria.demo.mapper;
+package com.veterinaria.demo.model.mapper;
 
-import com.veterinaria.demo.dto.procedure.CreateProcedureDTO;
-import com.veterinaria.demo.dto.procedure.GetProcedureDTO;
-import com.veterinaria.demo.entity.Animal;
-import com.veterinaria.demo.entity.Procedure;
-import com.veterinaria.demo.entity.User;
+import com.veterinaria.demo.model.dto.procedure.CreateProcedureDTO;
+import com.veterinaria.demo.model.dto.procedure.GetProcedureDTO;
+import com.veterinaria.demo.model.entity.Animal;
+import com.veterinaria.demo.model.entity.Procedure;
+import com.veterinaria.demo.model.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

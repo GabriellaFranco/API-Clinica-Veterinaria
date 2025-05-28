@@ -1,4 +1,4 @@
-package com.veterinaria.demo.dto.user;
+package com.veterinaria.demo.model.dto.user;
 
 import com.veterinaria.demo.enums.UserProfile;
 import jakarta.validation.constraints.Email;

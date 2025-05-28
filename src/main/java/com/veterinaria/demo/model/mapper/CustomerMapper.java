@@ -1,8 +1,8 @@
-package com.veterinaria.demo.mapper;
+package com.veterinaria.demo.model.mapper;
 
-import com.veterinaria.demo.dto.customer.CreateCustomerDTO;
-import com.veterinaria.demo.dto.customer.GetCustomerDTO;
-import com.veterinaria.demo.entity.Customer;
+import com.veterinaria.demo.model.dto.customer.CreateCustomerDTO;
+import com.veterinaria.demo.model.dto.customer.GetCustomerDTO;
+import com.veterinaria.demo.model.entity.Customer;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -14,7 +14,6 @@ public class CustomerMapper {
         return Customer.builder()
                 .name(customerDTO.name())
                 .phone(customerDTO.phone())
-                .creationDate(LocalDate.now())
                 .cpf(customerDTO.cpf())
                 .build();
     }
