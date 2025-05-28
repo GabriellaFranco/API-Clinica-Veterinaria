@@ -1,4 +1,4 @@
-package com.veterinaria.demo.dto.procedure;
+package com.veterinaria.demo.model.dto.procedure;
 
 import com.veterinaria.demo.enums.ProcedureType;
 import lombok.Builder;

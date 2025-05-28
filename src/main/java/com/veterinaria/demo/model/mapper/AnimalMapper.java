@@ -1,10 +1,9 @@
-package com.veterinaria.demo.mapper;
+package com.veterinaria.demo.model.mapper;
 
-import com.veterinaria.demo.dto.animal.CreateAnimalDTO;
-import com.veterinaria.demo.dto.animal.GetAnimalDTO;
-import com.veterinaria.demo.dto.customer.GetCustomerDTO;
-import com.veterinaria.demo.entity.Animal;
-import com.veterinaria.demo.entity.Customer;
+import com.veterinaria.demo.model.dto.animal.CreateAnimalDTO;
+import com.veterinaria.demo.model.dto.animal.GetAnimalDTO;
+import com.veterinaria.demo.model.entity.Animal;
+import com.veterinaria.demo.model.entity.Customer;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -17,7 +16,6 @@ public class AnimalMapper {
                 .name(animalDTO.name())
                 .age(animalDTO.age())
                 .breed(animalDTO.breed())
-                .creationDate(LocalDate.now())
                 .species(animalDTO.species())
                 .tutor(tutor)
                 .build();

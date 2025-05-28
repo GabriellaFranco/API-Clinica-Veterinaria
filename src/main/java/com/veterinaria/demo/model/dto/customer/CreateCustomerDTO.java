@@ -1,4 +1,4 @@
-package com.veterinaria.demo.dto.customer;
+package com.veterinaria.demo.model.dto.customer;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;

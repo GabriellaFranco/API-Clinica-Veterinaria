@@ -1,7 +1,7 @@
-package com.veterinaria.demo.dto.procedure;
+package com.veterinaria.demo.model.dto.procedure;
 
-import com.veterinaria.demo.entity.Animal;
-import com.veterinaria.demo.entity.User;
+import com.veterinaria.demo.model.entity.Animal;
+import com.veterinaria.demo.model.entity.User;
 import com.veterinaria.demo.enums.ProcedureType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

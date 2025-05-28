@@ -1,4 +1,4 @@
-package com.veterinaria.demo.entity;
+package com.veterinaria.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.veterinaria.demo.entity;
+package com.veterinaria.demo.model.entity;
 
 import com.veterinaria.demo.enums.AnimalSpecies;
 import jakarta.persistence.*;
