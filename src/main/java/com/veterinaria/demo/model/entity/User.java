@@ -2,16 +2,14 @@ package com.veterinaria.demo.model.entity;
 
 import com.veterinaria.demo.enums.UserProfile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 
 @Builder
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
@@ -34,5 +32,8 @@ public class User {
     @OneToMany(mappedBy = "veterinarian")
     @Nullable
     private List<Procedure> procedures;
+
+    @OneToMany
+    private List<Authority> authorities;
 
 }
