@@ -1,0 +1,4 @@
+package com.veterinaria.demo.events;
+
+public class AuthenticationEvent {
+}
