@@ -31,9 +31,8 @@ public class AnimalService {
                 .orElseThrow(() -> new ResourceNotFoundException("Animal not found: " + id));
     }
 
-    public GetAnimalDTO getAnimalByName(String name) {
-        return animalRepository.findByNameIgnoreCase(name).map(animalMapper::toGetAnimalDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Animal not found: " + name));
+    public List<GetAnimalDTO> getAnimalByName(String name) {
+        return animalRepository.findByNameIgnoreCase(name).stream().map(animalMapper::toGetAnimalDTO).toList();
     }
 
     public List<GetAnimalDTO> getAnimalsByTutorId(Long tutorId) {

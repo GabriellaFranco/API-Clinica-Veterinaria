@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
-    Optional<Animal> findByNameIgnoreCase(String name);
+    List<Animal> findByNameIgnoreCase(String name);
 
     List<Animal> findByTutorId(Long id);
 
