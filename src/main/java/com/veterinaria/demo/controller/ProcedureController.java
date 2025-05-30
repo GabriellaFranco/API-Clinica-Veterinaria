@@ -24,7 +24,7 @@ public class ProcedureController {
     @Operation(
             summary = "Returns a list with all existing procedures",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Operation successful"),
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
                     @ApiResponse(responseCode = "204", description = "No content to show")
             }
     )
@@ -44,6 +44,45 @@ public class ProcedureController {
     @GetMapping("/{id}")
     public ResponseEntity<GetProcedureDTO> getProcedureById(@PathVariable Long id) {
         return ResponseEntity.ok(procedureService.getProcedureById(id));
+    }
+
+    @Operation(
+            summary = "Returns a list with all existing procedures of the provided type",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("procedure-type/{type}")
+    public ResponseEntity<List<GetProcedureDTO>> getAllProceduresByType(@PathVariable String type) {
+        var procedures = procedureService.getAllProceduresByType(type);
+        return procedures.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(procedures);
+    }
+
+    @Operation(
+            summary = "Returns a list with all existing procedures registered to the informed animal id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("animal/{animalId}")
+    public ResponseEntity<List<GetProcedureDTO>> getAllProceduresByAnimalId(@PathVariable Long animalId) {
+        var procedures = procedureService.getAllProceduresByAnimalId(animalId);
+        return procedures.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(procedures);
+    }
+
+    @Operation(
+            summary = "Returns a list with all existing procedures registered to the user id provided",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("veterinarian/{vetId}")
+    public ResponseEntity<List<GetProcedureDTO>> getAllProceduresByVeterinarianID(@PathVariable Long vetId) {
+        var procedures = procedureService.getAllProceduresByVeterinarianId(vetId);
+        return procedures.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(procedures);
     }
 
     @Operation(

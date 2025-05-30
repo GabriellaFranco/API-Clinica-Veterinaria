@@ -35,6 +35,15 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
     }
 
+    public List<GetUserDTO> getUserByName(String name) {
+        return userRepository.findByNameIgnoreCase(name).stream().map(userMapper::toGetUserDTO).toList();
+    }
+
+    public List<GetUserDTO> getUsersByProfile(String profile) {
+        var userProfile = parseUserProfile(profile);
+        return userRepository.findByProfile(userProfile).stream().map(userMapper::toGetUserDTO).toList();
+    }
+
     @Transactional
     public GetUserDTO createUser(CreateUserDTO userDTO) {
         var userMapped = userMapper.toUser(userDTO);
@@ -58,6 +67,14 @@ public class UserService {
                     .orElseThrow(() -> new ResourceNotFoundException("Authority not found"));
             user.setAuthorities(List.of(staffAuthority));
             return UserProfile.RECEPTION_STAFF;
+        }
+    }
+
+    private  UserProfile parseUserProfile(String profile) {
+        try {
+            return UserProfile.valueOf(profile.toUpperCase());
+        } catch (IllegalArgumentException exc) {
+            throw new ResourceNotFoundException("Profile not found: " + profile);
         }
     }
 

@@ -35,15 +35,16 @@ public class AnimalController {
     }
 
     @Operation(
-            summary = "Finds a animal that matches the name provided",
+            summary = "Returns a list of animals that matches the name provided",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Operation successful"),
                     @ApiResponse(responseCode = "404", description = "Not found")
             }
     )
     @GetMapping("/name/{name}")
-    public ResponseEntity<GetAnimalDTO> getAnimalByName(@PathVariable String name) {
-        return ResponseEntity.ok(animalService.getAnimalByName(name));
+    public ResponseEntity<List<GetAnimalDTO>> getAnimalByName(@PathVariable String name) {
+        var animals = animalService.getAnimalByName(name);
+        return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);
     }
 
     @Operation(
@@ -65,7 +66,7 @@ public class AnimalController {
                     @ApiResponse(responseCode = "204", description = "No content to show")
             }
     )
-    @GetMapping("/customer/tutorId")
+    @GetMapping("/tutor/{tutorId}")
     public ResponseEntity<List<GetAnimalDTO>> getAllAnimalsByTutorId(@PathVariable Long tutorId) {
         var animals = animalService.getAnimalsByTutorId(tutorId);
         return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);

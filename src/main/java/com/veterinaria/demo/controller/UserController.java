@@ -24,7 +24,7 @@ public class UserController {
     @Operation(
             summary = "Returns a list with all existing users",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Operation successful"),
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
                     @ApiResponse(responseCode = "204", description = "No content to show")
             }
     )
@@ -44,6 +44,32 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<GetUserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @Operation(
+            summary = "Returns a list of users that matches the name provided",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "404", description = "Not found")
+            }
+    )
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<GetUserDTO>> getUserByName(@PathVariable String name) {
+        var users = userService.getUserByName(name);
+        return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
+    }
+
+    @Operation(
+            summary = "Returns a list with all existing users that match the profile provided",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("/profile/{profile}")
+    public ResponseEntity<List<GetUserDTO>> getAllUsersByProfile(@PathVariable String profile) {
+        var users = userService.getUsersByProfile(profile);
+        return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
 
     @Operation(
