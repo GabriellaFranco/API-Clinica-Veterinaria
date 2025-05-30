@@ -25,10 +25,10 @@ public record CreateProcedureDTO(
         String description,
 
         @NotNull
-        Animal animal_id,
+        Animal animalId,
 
         @NotNull
-        User veterinarian_id
+        User veterinarianId
 
         ) {
 

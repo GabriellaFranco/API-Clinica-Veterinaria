@@ -1,7 +1,14 @@
 package com.veterinaria.demo.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -13,7 +20,6 @@ public class Authority {
     private Long id;
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "authorities")
+    private List<User> users;
 }

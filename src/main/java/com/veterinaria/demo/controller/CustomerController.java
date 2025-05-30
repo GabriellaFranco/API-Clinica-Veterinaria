@@ -24,7 +24,7 @@ public class CustomerController {
     @Operation(
             summary = "Returns a list with all existing customers",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Operation successful"),
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
                     @ApiResponse(responseCode = "204", description = "No content to show")
             }
     )
@@ -44,6 +44,31 @@ public class CustomerController {
     @GetMapping("/{id}")
     public ResponseEntity<GetCustomerDTO> getCustomerById(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
+    }
+
+    @Operation(
+            summary = "Finds a customer that matches the cpf provided",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "404", description = "Not found")
+            }
+    )
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<GetCustomerDTO> getCustomerByCpf(@PathVariable String cpf) {
+        return ResponseEntity.ok(customerService.getCustomerByCpf(cpf));
+    }
+
+    @Operation(
+            summary = "Returns a list with all existing customers where the phone contains the informed number sequence",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("/phone/{phone}")
+    public ResponseEntity<List<GetCustomerDTO>> getAllCustomersByPhoneContaining(@PathVariable String phone) {
+        var customers = customerService.getAllCustomersByPhoneContaining(phone);
+        return customers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(customers);
     }
 
     @Operation(

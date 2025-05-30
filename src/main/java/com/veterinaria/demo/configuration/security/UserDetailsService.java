@@ -22,8 +22,8 @@ public class UserDetailsService implements org.springframework.security.core.use
         var user = userRepository.findUserByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
-        List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getName())).toList();
+            List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
+                    .map(authority -> new SimpleGrantedAuthority(authority.getName())).toList();
 
         return new User(user.getEmail(), user.getPassword(), authorities);
 

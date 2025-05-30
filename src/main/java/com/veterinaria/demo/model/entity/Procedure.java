@@ -28,7 +28,7 @@ public class Procedure {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "animal_id")
+    @JoinColumn(name = "animalId")
     private Animal animal;
 
     @ManyToOne
