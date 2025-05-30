@@ -28,6 +28,15 @@ public class CustomerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + id));
     }
 
+    public GetCustomerDTO getCustomerByCpf(String cpf) {
+        return customerRepository.findByCpf(cpf).map(customerMapper::toGetCustomerDTO)
+                .orElseThrow(() ->new ResourceNotFoundException("Customer not found: " + cpf));
+    }
+
+    public List<GetCustomerDTO> getAllCustomersByPhoneContaining(String phone) {
+        return customerRepository.findByPhoneContaining(phone).stream().map(customerMapper::toGetCustomerDTO).toList();
+    }
+
     @Transactional
     public GetCustomerDTO createCustomer(CreateCustomerDTO customerDTO) {
         var customerMapped = customerMapper.toCustomer(customerDTO);

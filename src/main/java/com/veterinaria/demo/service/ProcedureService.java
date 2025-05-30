@@ -33,10 +33,10 @@ public class ProcedureService {
 
     @Transactional
     public GetProcedureDTO createProcedure(CreateProcedureDTO procedureDTO) {
-        var animal = animalRepository.findById(procedureDTO.animal_id().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Animal not found:" + procedureDTO.animal_id().getId()));
-        var veterinarian = userRepository.findById(procedureDTO.veterinarian_id().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + procedureDTO.veterinarian_id().getId()));
+        var animal = animalRepository.findById(procedureDTO.animalId().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found:" + procedureDTO.animalId().getId()));
+        var veterinarian = userRepository.findById(procedureDTO.veterinarianId().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + procedureDTO.veterinarianId().getId()));
 
         var procedureMapped = procedureMapper.toProcedure(procedureDTO, veterinarian, animal);
         var procedureSaved = procedureRepository.save(procedureMapped);

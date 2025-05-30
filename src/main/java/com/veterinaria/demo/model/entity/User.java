@@ -1,12 +1,17 @@
 package com.veterinaria.demo.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.veterinaria.demo.enums.UserProfile;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @RequiredArgsConstructor
@@ -33,7 +38,11 @@ public class User {
     @Nullable
     private List<Procedure> procedures;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id")
+    )
     private List<Authority> authorities;
-
 }

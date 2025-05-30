@@ -24,6 +24,6 @@ public record CreateAnimalDTO(
         int age,
 
         @NotNull
-        Long tutor_id
+        Long tutorId
 ) {
 }
