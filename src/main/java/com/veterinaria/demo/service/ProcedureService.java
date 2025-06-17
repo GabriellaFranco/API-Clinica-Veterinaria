@@ -1,6 +1,9 @@
 package com.veterinaria.demo.service;
 
 import com.veterinaria.demo.enums.ProcedureType;
+import com.veterinaria.demo.enums.UserProfile;
+import com.veterinaria.demo.exception.BusinessException;
+import com.veterinaria.demo.exception.OperationNotAllowedException;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
 import com.veterinaria.demo.model.dto.procedure.ProcedureRequestDTO;
 import com.veterinaria.demo.model.dto.procedure.ProcedureResponseDTO;
@@ -52,6 +55,8 @@ public class ProcedureService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + procedureDTO.veterinarianId().getId()));
 
         var procedureMapped = procedureMapper.toProcedure(procedureDTO, veterinarian, animal);
+        validateDuplicatedProcedure(procedureMapped);
+        validateVeterinarian(procedureMapped);
         var procedureSaved = procedureRepository.save(procedureMapped);
 
         return procedureMapper.toProcedureResponseDTO(procedureSaved);
@@ -82,6 +87,19 @@ public class ProcedureService {
         Optional.ofNullable(procedureDTO.price())
                 .filter(price -> price.compareTo(BigDecimal.ZERO) > 0)
                 .ifPresent(procedure::setPrice);
+    }
+
+    private void validateDuplicatedProcedure(Procedure procedure) {
+        var exists = procedureRepository.existsByAnimalIdAndDate(procedure.getAnimal().getId(), procedure.getDate());
+        if (exists) {
+            throw new OperationNotAllowedException("This animal already has a procedure scheduled at this date and time");
+        }
+    }
+
+    private void validateVeterinarian(Procedure procedure) {
+        if (!procedure.getVeterinarian().getProfile().equals(UserProfile.VETERINARIAN)) {
+            throw new BusinessException("Only veterinarians can be assigned to a procedure");
+        }
     }
 
 }

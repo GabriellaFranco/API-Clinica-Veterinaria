@@ -1,6 +1,7 @@
 package com.veterinaria.demo.service;
 
 import com.veterinaria.demo.enums.AnimalSpecies;
+import com.veterinaria.demo.exception.OperationNotAllowedException;
 import com.veterinaria.demo.model.dto.animal.AnimalRequestDTO;
 import com.veterinaria.demo.model.dto.animal.AnimalResponseDTO;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
@@ -82,4 +83,10 @@ public class AnimalService {
                 .ifPresent(animal::setAge);
     }
 
+    private void validateDuplicatedRegister(Animal animal) {
+        var exists = animalRepository.existsByNameAndTutorId(animal.getName(), animal.getTutor().getId());
+        if (exists) {
+            throw new OperationNotAllowedException("This animal is already registered for this tutor");
+        }
+    }
 }
