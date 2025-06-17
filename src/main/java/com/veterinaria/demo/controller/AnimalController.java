@@ -1,7 +1,8 @@
 package com.veterinaria.demo.controller;
 
-import com.veterinaria.demo.model.dto.animal.CreateAnimalDTO;
-import com.veterinaria.demo.model.dto.animal.GetAnimalDTO;
+import com.veterinaria.demo.enums.AnimalSpecies;
+import com.veterinaria.demo.model.dto.animal.AnimalRequestDTO;
+import com.veterinaria.demo.model.dto.animal.AnimalResponseDTO;
 import com.veterinaria.demo.service.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,23 +30,11 @@ public class AnimalController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<GetAnimalDTO>> getAllAnimals() {
+    public ResponseEntity<List<AnimalResponseDTO>> getAllAnimals() {
         var animals = animalService.getAllAnimals();
         return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);
     }
 
-    @Operation(
-            summary = "Returns a list of animals that matches the name provided",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Operation successful"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<GetAnimalDTO>> getAnimalByName(@PathVariable String name) {
-        var animals = animalService.getAnimalByName(name);
-        return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);
-    }
 
     @Operation(
             summary = "Finds a animal that matches the id provided",
@@ -55,34 +44,8 @@ public class AnimalController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<GetAnimalDTO> getAnimalById(@PathVariable Long id) {
+    public ResponseEntity<AnimalResponseDTO> getAnimalById(@PathVariable Long id) {
         return ResponseEntity.ok(animalService.getAnimalById(id));
-    }
-
-    @Operation(
-            summary = "Returns a list with all existing animals registered to a customer",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Operation successful"),
-                    @ApiResponse(responseCode = "204", description = "No content to show")
-            }
-    )
-    @GetMapping("/tutor/{tutorId}")
-    public ResponseEntity<List<GetAnimalDTO>> getAllAnimalsByTutorId(@PathVariable Long tutorId) {
-        var animals = animalService.getAnimalsByTutorId(tutorId);
-        return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);
-    }
-
-    @Operation(
-            summary = "Returns a list with all existing animals registered to a species",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Operation successful"),
-                    @ApiResponse(responseCode = "204", description = "No content to show")
-            }
-    )
-    @GetMapping("/species/{species}")
-    public ResponseEntity<List<GetAnimalDTO>> getAllAnimalsBySpecies(@PathVariable String species) {
-        var animals = animalService.getAnimalsBySpecies(species);
-        return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);
     }
 
     @Operation(
@@ -93,11 +56,26 @@ public class AnimalController {
             }
     )
     @PostMapping
-    public ResponseEntity<GetAnimalDTO> createAnimal(@Valid @RequestBody CreateAnimalDTO animalDTO) {
+    public ResponseEntity<AnimalResponseDTO> createAnimal(@Valid @RequestBody AnimalRequestDTO animalDTO) {
         var animal = animalService.createAnimal(animalDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(animal.id()).toUri();
         return ResponseEntity.created(uri).body(animal);
     }
 
+    @Operation(
+            summary = "Returns a list of animals matching the informed params",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("/search")
+    public ResponseEntity<List<AnimalResponseDTO>> getAnimalsByFilter(@RequestParam(required = false) String name,
+                                                                      @RequestParam(required = false) String breed,
+                                                                      @RequestParam(required = false) AnimalSpecies species,
+                                                                      @RequestParam(required = false) Long tutorId) {
 
+        var animals = animalService.getAnimalsByFilter(name, breed, species, tutorId);
+        return animals.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(animals);
+    }
 }

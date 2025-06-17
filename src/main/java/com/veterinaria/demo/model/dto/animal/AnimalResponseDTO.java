@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record GetAnimalDTO (
+public record AnimalResponseDTO(
         Long id,
         String name,
         AnimalSpecies species,
