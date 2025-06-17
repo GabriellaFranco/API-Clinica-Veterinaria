@@ -4,6 +4,8 @@ import com.veterinaria.demo.enums.ProcedureType;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
 import com.veterinaria.demo.model.dto.procedure.ProcedureRequestDTO;
 import com.veterinaria.demo.model.dto.procedure.ProcedureResponseDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureUpdateDTO;
+import com.veterinaria.demo.model.entity.Procedure;
 import com.veterinaria.demo.model.mapper.ProcedureMapper;
 import com.veterinaria.demo.repository.AnimalRepository;
 import com.veterinaria.demo.repository.ProcedureRepository;
@@ -12,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -53,12 +57,31 @@ public class ProcedureService {
         return procedureMapper.toProcedureResponseDTO(procedureSaved);
     }
 
-    private ProcedureType parseProcedureType(String type) {
-        try {
-            return ProcedureType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException exc) {
-            throw new ResourceNotFoundException("Procedure type not found: " + type);
-        }
+    @Transactional
+    public ProcedureResponseDTO updateProcedure(Long id, ProcedureUpdateDTO procedureDTO) {
+        var procedure = procedureRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Procedure not found: " + id));
+
+        applyUpdate(procedure, procedureDTO);
+        var updatedProcedure = procedureRepository.save(procedure);
+        return procedureMapper.toProcedureResponseDTO(updatedProcedure);
+    }
+
+    @Transactional
+    public void deleteProcedure(Long id) {
+        var procedure = procedureRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Procedure not found: " + id));
+        procedureRepository.delete(procedure);
+    }
+
+    private void applyUpdate(Procedure procedure, ProcedureUpdateDTO procedureDTO) {
+        Optional.ofNullable(procedureDTO.description())
+                .filter(description -> !description.isBlank())
+                .ifPresent(procedure::setDescription);
+
+        Optional.ofNullable(procedureDTO.price())
+                .filter(price -> price.compareTo(BigDecimal.ZERO) > 0)
+                .ifPresent(procedure::setPrice);
     }
 
 }

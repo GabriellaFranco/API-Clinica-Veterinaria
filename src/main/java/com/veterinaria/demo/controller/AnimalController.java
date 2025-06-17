@@ -3,6 +3,7 @@ package com.veterinaria.demo.controller;
 import com.veterinaria.demo.enums.AnimalSpecies;
 import com.veterinaria.demo.model.dto.animal.AnimalRequestDTO;
 import com.veterinaria.demo.model.dto.animal.AnimalResponseDTO;
+import com.veterinaria.demo.model.dto.animal.AnimalUpdateDTO;
 import com.veterinaria.demo.service.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,6 +61,32 @@ public class AnimalController {
         var animal = animalService.createAnimal(animalDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(animal.id()).toUri();
         return ResponseEntity.created(uri).body(animal);
+    }
+
+    @Operation(
+            summary = "Updates the animal matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "400", description = "Invalid data"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<AnimalResponseDTO> updateAnimal(@PathVariable Long id, @RequestBody AnimalUpdateDTO animalDTO) {
+        return ResponseEntity.ok(animalService.updateAnimal(id, animalDTO));
+    }
+
+    @Operation(
+            summary = "Delete the animal matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAnimal(@PathVariable Long id) {
+        animalService.deleteAnimal(id);
+        return ResponseEntity.ok("Animal successfully deleted: " + id);
     }
 
     @Operation(

@@ -2,6 +2,7 @@ package com.veterinaria.demo.controller;
 
 import com.veterinaria.demo.model.dto.customer.CustomerRequestDTO;
 import com.veterinaria.demo.model.dto.customer.CustomerResponseDTO;
+import com.veterinaria.demo.model.dto.customer.CustomerUpdateDTO;
 import com.veterinaria.demo.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,6 +61,32 @@ public class CustomerController {
         var customer = customerService.createCustomer(customerDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(customer.id()).toUri();
         return ResponseEntity.created(uri).body(customer);
+    }
+
+    @Operation(
+            summary = "Updates the user matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "400", description = "Invalid data"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable Long id, @RequestBody CustomerUpdateDTO customerDTO) {
+        return ResponseEntity.ok(customerService.updateCustomer(id, customerDTO));
+    }
+
+    @Operation(
+            summary = "Delete the customer matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.ok("Customer successfully deleted: " + id);
     }
 
     @Operation(

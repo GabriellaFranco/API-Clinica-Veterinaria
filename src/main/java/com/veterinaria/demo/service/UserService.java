@@ -50,6 +50,23 @@ public class UserService {
         return userMapper.toUserResponseDTO(userSaved);
     }
 
+    @Transactional
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO userDTO) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+
+        applyUpdates(user, userDTO);
+        var userSaved = userRepository.save(user);
+        return userMapper.toUserResponseDTO(userSaved);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        var userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+        userRepository.delete(userToDelete);
+    }
+
     private UserProfile defineUserProfileAndAuthority(User user) {
         if (user.getCrmv_number() != null && !user.getCrmv_number().isBlank()) {
             var vetAuthority = authorityRepository.findByName("ROLE_VETERINARIAN")
@@ -62,5 +79,15 @@ public class UserService {
             user.setAuthorities(List.of(staffAuthority));
             return UserProfile.RECEPTION_STAFF;
         }
+    }
+
+    private void applyUpdates(User user, UserUpdateDTO userDTO) {
+        Optional.ofNullable(userDTO.name())
+                .filter(name -> !name.isBlank())
+                .ifPresent(user::setName);
+
+        Optional.ofNullable(userDTO.email())
+                .filter(email -> !email.isBlank())
+                .ifPresent(user::setEmail);
     }
 }

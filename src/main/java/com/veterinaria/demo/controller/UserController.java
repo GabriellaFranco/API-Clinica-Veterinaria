@@ -3,6 +3,7 @@ package com.veterinaria.demo.controller;
 import com.veterinaria.demo.enums.UserProfile;
 import com.veterinaria.demo.model.dto.user.UserRequestDTO;
 import com.veterinaria.demo.model.dto.user.UserResponseDTO;
+import com.veterinaria.demo.model.dto.user.UserUpdateDTO;
 import com.veterinaria.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -59,6 +60,34 @@ public class UserController {
         var user = userService.createUser(userDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.id()).toUri();
         return ResponseEntity.created(uri).body(user);
+    }
+
+
+    @Operation(
+            summary = "Updates the user matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "400", description = "Invalid data"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, userDTO));
+    }
+
+    @Operation(
+            summary = "Delete the user matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+                    @ApiResponse(responseCode = "400", description = "Can't self delete")
+            }
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User successfully deleted: " + id);
     }
 
     @Operation(
