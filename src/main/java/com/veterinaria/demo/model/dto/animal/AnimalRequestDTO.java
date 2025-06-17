@@ -21,7 +21,7 @@ public record AnimalRequestDTO(
 
         @Positive
         @NotNull
-        int age,
+        Long age,
 
         @NotNull
         Long tutorId

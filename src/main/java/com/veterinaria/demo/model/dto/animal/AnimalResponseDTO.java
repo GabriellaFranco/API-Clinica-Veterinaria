@@ -11,7 +11,7 @@ public record AnimalResponseDTO(
         String name,
         AnimalSpecies species,
         String breed,
-        int age,
+        Long age,
         LocalDate creationDate,
         CustomerDTO tutor
 ){

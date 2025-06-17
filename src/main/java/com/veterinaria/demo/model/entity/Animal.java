@@ -25,7 +25,7 @@ public class Animal {
     @Enumerated(EnumType.STRING)
     private AnimalSpecies species;
     private String breed;
-    private int age;
+    private Long age;
     private LocalDate creationDate;
 
     @ManyToOne

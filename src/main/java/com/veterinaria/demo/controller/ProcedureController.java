@@ -3,6 +3,7 @@ package com.veterinaria.demo.controller;
 import com.veterinaria.demo.enums.ProcedureType;
 import com.veterinaria.demo.model.dto.procedure.ProcedureRequestDTO;
 import com.veterinaria.demo.model.dto.procedure.ProcedureResponseDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureUpdateDTO;
 import com.veterinaria.demo.service.ProcedureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,6 +62,32 @@ public class ProcedureController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(procedure.id()).toUri();
         return ResponseEntity.created(uri).body(procedure);
+    }
+
+    @Operation(
+            summary = "Updates the procedure matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "400", description = "Invalid data"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<ProcedureResponseDTO> updateProcedure(@PathVariable Long id, @RequestBody ProcedureUpdateDTO procedureDTO) {
+        return ResponseEntity.ok(procedureService.updateProcedure(id, procedureDTO));
+    }
+
+    @Operation(
+            summary = "Delete the procedure matching the provided id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+            }
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProcedure(@PathVariable Long id) {
+        procedureService.deleteProcedure(id);
+        return ResponseEntity.ok("Procedure successfully deleted: " + id);
     }
 
     @Operation(

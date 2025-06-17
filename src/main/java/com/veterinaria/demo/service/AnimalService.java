@@ -4,6 +4,8 @@ import com.veterinaria.demo.enums.AnimalSpecies;
 import com.veterinaria.demo.model.dto.animal.AnimalRequestDTO;
 import com.veterinaria.demo.model.dto.animal.AnimalResponseDTO;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
+import com.veterinaria.demo.model.dto.animal.AnimalUpdateDTO;
+import com.veterinaria.demo.model.entity.Animal;
 import com.veterinaria.demo.model.mapper.AnimalMapper;
 import com.veterinaria.demo.repository.AnimalRepository;
 import com.veterinaria.demo.repository.CustomerRepository;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -46,6 +49,37 @@ public class AnimalService {
         var animalSaved = animalRepository.save(animalMapped);
 
         return animalMapper.toAnimalResponseDTO(animalSaved);
+    }
+
+    @Transactional
+    public AnimalResponseDTO updateAnimal(Long id, AnimalUpdateDTO animalDTO) {
+        var animal = animalRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found: " + id));
+
+        applyUpdates(animal, animalDTO);
+        var updatedAnimal = animalRepository.save(animal);
+        return animalMapper.toAnimalResponseDTO(updatedAnimal);
+    }
+
+    @Transactional
+    public void deleteAnimal(Long id) {
+        var animalToDelete = animalRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found: " + id));
+        animalRepository.delete(animalToDelete);
+    }
+
+    private void applyUpdates(Animal animal, AnimalUpdateDTO animalDTO) {
+        Optional.ofNullable(animalDTO.name())
+                .filter(name -> !name.isBlank())
+                .ifPresent(animal::setName);
+
+        Optional.ofNullable(animalDTO.breed())
+                .filter(breed -> !breed.isBlank())
+                .ifPresent(animal::setBreed);
+
+        Optional.ofNullable(animalDTO.age())
+                .filter(age -> age > 0)
+                .ifPresent(animal::setAge);
     }
 
 }

@@ -3,6 +3,8 @@ package com.veterinaria.demo.service;
 import com.veterinaria.demo.model.dto.customer.CustomerRequestDTO;
 import com.veterinaria.demo.model.dto.customer.CustomerResponseDTO;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
+import com.veterinaria.demo.model.dto.customer.CustomerUpdateDTO;
+import com.veterinaria.demo.model.entity.Customer;
 import com.veterinaria.demo.model.mapper.CustomerMapper;
 import com.veterinaria.demo.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -40,5 +43,32 @@ public class CustomerService {
         customerRepository.save(customerMapped);
 
         return customerMapper.toCustomerResponseDTO(customerMapped);
+    }
+
+    @Transactional
+    public CustomerResponseDTO updateCustomer(Long id, CustomerUpdateDTO customerDTO) {
+        var customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + id));
+
+        applyUpdates(customer, customerDTO);
+        var customerUpdated = customerRepository.save(customer);
+        return customerMapper.toCustomerResponseDTO(customerUpdated);
+    }
+
+    @Transactional
+    public void deleteCustomer(Long id) {
+        var customerToDelete = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + id));
+        customerRepository.delete(customerToDelete);
+    }
+
+    private void applyUpdates(Customer customer, CustomerUpdateDTO customerDTO) {
+        Optional.ofNullable(customerDTO.name())
+                .filter(name -> !name.isBlank())
+                .ifPresent(customer::setName);
+
+        Optional.ofNullable(customerDTO.phone())
+                .filter(phone -> !phone.isBlank())
+                .ifPresent(customer::setPhone);
     }
 }

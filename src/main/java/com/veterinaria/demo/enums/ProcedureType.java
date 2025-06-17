@@ -1,5 +1,7 @@
 package com.veterinaria.demo.enums;
 
+import com.veterinaria.demo.exception.ResourceNotFoundException;
+
 public enum ProcedureType {
     CONSULTATION,
     FOLLOW_UP_CONSULTATION,
@@ -23,5 +25,13 @@ public enum ProcedureType {
     ORTHOPEDIC_SURGERY,
     SOFT_TISSUE_SURGERY,
     CARDIAC_SURGERY,
-    OTHER
+    OTHER;
+
+    private ProcedureType parseProcedureType(String type) {
+        try {
+            return ProcedureType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException exc) {
+            throw new ResourceNotFoundException("Procedure type not found: " + type);
+        }
+    }
 }
