@@ -1,5 +1,6 @@
 package com.veterinaria.demo.service;
 
+import com.veterinaria.demo.exception.OperationNotAllowedException;
 import com.veterinaria.demo.model.dto.customer.CustomerRequestDTO;
 import com.veterinaria.demo.model.dto.customer.CustomerResponseDTO;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
@@ -37,6 +38,7 @@ public class CustomerService {
     }
     @Transactional
     public CustomerResponseDTO createCustomer(CustomerRequestDTO customerDTO) {
+        validateCPF(customerDTO.cpf());
         var customerMapped = customerMapper.toCustomer(customerDTO);
 
         customerMapped.setCreationDate(LocalDate.now());
@@ -70,5 +72,12 @@ public class CustomerService {
         Optional.ofNullable(customerDTO.phone())
                 .filter(phone -> !phone.isBlank())
                 .ifPresent(customer::setPhone);
+    }
+
+    private void validateCPF(String cpf) {
+        var customer = customerRepository.findByCpf(cpf);
+        if (customer.isPresent()) {
+            throw new OperationNotAllowedException("CPF already registered");
+        }
     }
 }

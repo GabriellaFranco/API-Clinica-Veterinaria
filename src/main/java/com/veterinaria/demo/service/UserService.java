@@ -1,6 +1,8 @@
 package com.veterinaria.demo.service;
 
 import com.veterinaria.demo.enums.UserProfile;
+import com.veterinaria.demo.exception.BusinessException;
+import com.veterinaria.demo.exception.OperationNotAllowedException;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
 import com.veterinaria.demo.model.dto.user.UserRequestDTO;
 import com.veterinaria.demo.model.dto.user.UserResponseDTO;
@@ -41,7 +43,9 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userDTO) {
+        validateEmail(userDTO.email());
         var userMapped = userMapper.toUser(userDTO);
+        validateVeterinarian(userMapped);
 
         userMapped.setPassword(encoder.encode(userMapped.getPassword()));
         userMapped.setProfile(defineUserProfileAndAuthority(userMapped));
@@ -89,5 +93,20 @@ public class UserService {
         Optional.ofNullable(userDTO.email())
                 .filter(email -> !email.isBlank())
                 .ifPresent(user::setEmail);
+    }
+
+    private void validateEmail(String email) {
+        var user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            throw new OperationNotAllowedException("Email already registered: " + email);
+        }
+    }
+
+    private void validateVeterinarian(User user) {
+        if (user.getProfile().equals(UserProfile.VETERINARIAN)) {
+            Optional.ofNullable(user.getCrmv_number())
+                    .filter(crmv -> !crmv.isBlank())
+                    .orElseThrow(() -> new BusinessException("Veterinarians must informe the crmv number"));
+        }
     }
 }
