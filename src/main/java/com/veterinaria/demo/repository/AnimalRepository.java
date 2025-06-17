@@ -20,4 +20,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
 """)
     List<Animal> findByFilter(String name, String breed, AnimalSpecies species, Long customerId);
 
+    boolean existsByNameAndTutorId(String name, Long tutorId);
+
 }

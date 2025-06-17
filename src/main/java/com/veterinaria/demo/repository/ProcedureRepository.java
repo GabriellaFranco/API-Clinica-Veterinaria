@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -20,4 +21,6 @@ public interface ProcedureRepository extends JpaRepository<Procedure, Long> {
       AND (:veterinarianId IS NULL OR p.veterinarian.id = :veterinarianId)
 """)
     List<Procedure> findByFilter(ProcedureType type, LocalDate date, Long animalId, Long veterinarianId);
+
+    boolean existsByAnimalIdAndDate(Long animalId, LocalDateTime date);
 }
