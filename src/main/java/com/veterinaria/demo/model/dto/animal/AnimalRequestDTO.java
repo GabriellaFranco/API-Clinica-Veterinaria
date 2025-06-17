@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
-public record CreateAnimalDTO(
+public record AnimalRequestDTO(
 
         @Size(min = 2)
         @NotNull

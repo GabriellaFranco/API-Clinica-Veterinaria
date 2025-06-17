@@ -1,6 +1,5 @@
 package com.veterinaria.demo.model.dto.user;
 
-import com.veterinaria.demo.enums.UserProfile;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -8,7 +7,7 @@ import lombok.Builder;
 import org.springframework.lang.Nullable;
 
 @Builder
-public record CreateUserDTO(
+public record UserRequestDTO(
 
         @NotNull
         @Size(min = 4)

@@ -4,7 +4,7 @@ import com.veterinaria.demo.enums.UserProfile;
 import lombok.Builder;
 
 @Builder
-public record GetUserDTO(
+public record UserResponseDTO(
         Long id,
         String name,
         String email,

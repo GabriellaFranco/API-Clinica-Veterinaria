@@ -1,7 +1,7 @@
 package com.veterinaria.demo.service;
 
-import com.veterinaria.demo.model.dto.customer.CreateCustomerDTO;
-import com.veterinaria.demo.model.dto.customer.GetCustomerDTO;
+import com.veterinaria.demo.model.dto.customer.CustomerRequestDTO;
+import com.veterinaria.demo.model.dto.customer.CustomerResponseDTO;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
 import com.veterinaria.demo.model.mapper.CustomerMapper;
 import com.veterinaria.demo.repository.CustomerRepository;
@@ -19,31 +19,26 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
-    public List<GetCustomerDTO> getAllCustomers() {
-        return customerRepository.findAll().stream().map(customerMapper::toGetCustomerDTO).toList();
+    public List<CustomerResponseDTO> getAllCustomers() {
+        return customerRepository.findAll().stream().map(customerMapper::toCustomerResponseDTO).toList();
     }
 
-    public GetCustomerDTO getCustomerById(Long id) {
-        return customerRepository.findById(id).map(customerMapper::toGetCustomerDTO)
+    public CustomerResponseDTO getCustomerById(Long id) {
+        return customerRepository.findById(id).map(customerMapper::toCustomerResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + id));
     }
 
-    public GetCustomerDTO getCustomerByCpf(String cpf) {
-        return customerRepository.findByCpf(cpf).map(customerMapper::toGetCustomerDTO)
-                .orElseThrow(() ->new ResourceNotFoundException("Customer not found: " + cpf));
+    public List<CustomerResponseDTO> getCustomersByFilter(String name, String phone, String cpf, LocalDate creationDate) {
+        return customerRepository.findByFilter(name, phone, cpf, creationDate)
+                .stream().map(customerMapper::toCustomerResponseDTO).toList();
     }
-
-    public List<GetCustomerDTO> getAllCustomersByPhoneContaining(String phone) {
-        return customerRepository.findByPhoneContaining(phone).stream().map(customerMapper::toGetCustomerDTO).toList();
-    }
-
     @Transactional
-    public GetCustomerDTO createCustomer(CreateCustomerDTO customerDTO) {
+    public CustomerResponseDTO createCustomer(CustomerRequestDTO customerDTO) {
         var customerMapped = customerMapper.toCustomer(customerDTO);
 
         customerMapped.setCreationDate(LocalDate.now());
         customerRepository.save(customerMapped);
 
-        return customerMapper.toGetCustomerDTO(customerMapped);
+        return customerMapper.toCustomerResponseDTO(customerMapped);
     }
 }

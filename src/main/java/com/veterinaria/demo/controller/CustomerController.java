@@ -1,7 +1,7 @@
 package com.veterinaria.demo.controller;
 
-import com.veterinaria.demo.model.dto.customer.CreateCustomerDTO;
-import com.veterinaria.demo.model.dto.customer.GetCustomerDTO;
+import com.veterinaria.demo.model.dto.customer.CustomerRequestDTO;
+import com.veterinaria.demo.model.dto.customer.CustomerResponseDTO;
 import com.veterinaria.demo.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class CustomerController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<GetCustomerDTO>> getAllCustomers() {
+    public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
         var customers = customerService.getAllCustomers();
         return customers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(customers);
     }
@@ -42,34 +43,10 @@ public class CustomerController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<GetCustomerDTO> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<CustomerResponseDTO> getCustomerById(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    @Operation(
-            summary = "Finds a customer that matches the cpf provided",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Operation successful"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
-    @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<GetCustomerDTO> getCustomerByCpf(@PathVariable String cpf) {
-        return ResponseEntity.ok(customerService.getCustomerByCpf(cpf));
-    }
-
-    @Operation(
-            summary = "Returns a list with all existing customers where the phone contains the informed number sequence",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Operation successful"),
-                    @ApiResponse(responseCode = "204", description = "No content to show")
-            }
-    )
-    @GetMapping("/phone/{phone}")
-    public ResponseEntity<List<GetCustomerDTO>> getAllCustomersByPhoneContaining(@PathVariable String phone) {
-        var customers = customerService.getAllCustomersByPhoneContaining(phone);
-        return customers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(customers);
-    }
 
     @Operation(
             summary = "Creates a new customer",
@@ -79,9 +56,26 @@ public class CustomerController {
             }
     )
     @PostMapping
-    public ResponseEntity<GetCustomerDTO> createCustomer(@Valid @RequestBody CreateCustomerDTO customerDTO) {
+    public ResponseEntity<CustomerResponseDTO> createCustomer(@Valid @RequestBody CustomerRequestDTO customerDTO) {
         var customer = customerService.createCustomer(customerDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(customer.id()).toUri();
         return ResponseEntity.created(uri).body(customer);
+    }
+
+    @Operation(
+            summary = "Returns a list of customers matching the informed params",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Operation successful"),
+                    @ApiResponse(responseCode = "204", description = "No content to show")
+            }
+    )
+    @GetMapping("/search")
+    public ResponseEntity<List<CustomerResponseDTO>> getCustomersByFilter(@RequestParam(required = false) String name,
+                                                                          @RequestParam(required = false) String phone,
+                                                                          @RequestParam(required = false) String cpf,
+                                                                          @RequestParam(required = false) LocalDate creationDate) {
+
+        var customers = customerService.getCustomersByFilter(name, phone, cpf, creationDate);
+        return customers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(customers);
     }
 }

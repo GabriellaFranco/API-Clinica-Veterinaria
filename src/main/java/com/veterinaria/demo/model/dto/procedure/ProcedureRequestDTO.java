@@ -11,7 +11,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record CreateProcedureDTO(
+public record ProcedureRequestDTO(
 
         @NotNull
         ProcedureType type,

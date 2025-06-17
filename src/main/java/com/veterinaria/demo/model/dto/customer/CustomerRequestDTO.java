@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
-public record CreateCustomerDTO(
+public record CustomerRequestDTO(
 
         @Size(min = 4)
         @NotNull

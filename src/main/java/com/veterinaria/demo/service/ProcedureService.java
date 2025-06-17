@@ -2,8 +2,8 @@ package com.veterinaria.demo.service;
 
 import com.veterinaria.demo.enums.ProcedureType;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
-import com.veterinaria.demo.model.dto.procedure.CreateProcedureDTO;
-import com.veterinaria.demo.model.dto.procedure.GetProcedureDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureRequestDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureResponseDTO;
 import com.veterinaria.demo.model.mapper.ProcedureMapper;
 import com.veterinaria.demo.repository.AnimalRepository;
 import com.veterinaria.demo.repository.ProcedureRepository;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,36 +24,24 @@ public class ProcedureService {
     private final UserRepository userRepository;
     private final ProcedureMapper procedureMapper;
 
-    public List<GetProcedureDTO> getAllProcedures() {
-        return procedureRepository.findAll().stream().map(procedureMapper::toGetProcedureDTO).toList();
+    public List<ProcedureResponseDTO> getAllProcedures() {
+        return procedureRepository.findAll().stream().map(procedureMapper::toProcedureResponseDTO).toList();
     }
 
-    public GetProcedureDTO getProcedureById(Long id) {
-        return procedureRepository.findById(id).map(procedureMapper::toGetProcedureDTO)
+    public ProcedureResponseDTO getProcedureById(Long id) {
+        return procedureRepository.findById(id).map(procedureMapper::toProcedureResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Procedure not found: " + id));
     }
 
-    public List<GetProcedureDTO> getAllProceduresByType(String type) {
-        var procedureType = parseProcedureType(type);
-        return procedureRepository.findByType(procedureType).stream().map(procedureMapper::toGetProcedureDTO).toList();
-    }
+    public List<ProcedureResponseDTO> getProceduresByFilter(ProcedureType type, LocalDate date, Long animalId,
+                                                            Long veterinarianId) {
 
-    public List<GetProcedureDTO> getAllProceduresByVeterinarianId(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Veterinarian not found: " + id);
-        }
-        return procedureRepository.findByVeterinarianId(id).stream().map(procedureMapper::toGetProcedureDTO).toList();
-    }
-
-    public List<GetProcedureDTO> getAllProceduresByAnimalId(Long id) {
-        if (!animalRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Animal not found: " + id);
-        }
-        return procedureRepository.findByAnimalId(id).stream().map(procedureMapper::toGetProcedureDTO).toList();
+        return procedureRepository.findByFilter(type, date, animalId, veterinarianId)
+                .stream().map(procedureMapper::toProcedureResponseDTO).toList();
     }
 
     @Transactional
-    public GetProcedureDTO createProcedure(CreateProcedureDTO procedureDTO) {
+    public ProcedureResponseDTO createProcedure(ProcedureRequestDTO procedureDTO) {
         var animal = animalRepository.findById(procedureDTO.animalId().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Animal not found:" + procedureDTO.animalId().getId()));
         var veterinarian = userRepository.findById(procedureDTO.veterinarianId().getId())
@@ -61,7 +50,7 @@ public class ProcedureService {
         var procedureMapped = procedureMapper.toProcedure(procedureDTO, veterinarian, animal);
         var procedureSaved = procedureRepository.save(procedureMapped);
 
-        return procedureMapper.toGetProcedureDTO(procedureSaved);
+        return procedureMapper.toProcedureResponseDTO(procedureSaved);
     }
 
     private ProcedureType parseProcedureType(String type) {
