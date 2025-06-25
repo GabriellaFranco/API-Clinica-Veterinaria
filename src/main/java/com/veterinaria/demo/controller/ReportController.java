@@ -2,7 +2,7 @@ package com.veterinaria.demo.controller;
 
 import com.veterinaria.demo.model.entity.User;
 import com.veterinaria.demo.repository.UserRepository;
-import com.veterinaria.demo.service.reportService.UserReportService;
+import com.veterinaria.demo.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/reports")
 public class ReportController {
 
-    private final UserReportService userReportService;
+    private final ReportService userReportService;
     private final UserRepository userRepository;
 
     @GetMapping("/all-users")
