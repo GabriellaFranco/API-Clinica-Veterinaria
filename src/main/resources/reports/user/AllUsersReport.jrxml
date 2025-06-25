@@ -2,9 +2,9 @@
 <jasperReport name="allUsers" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="148df90c-535f-474c-8657-feafdf5365d1">
     <property name="com.jaspersoft.studio.data.sql.tables" value="dXNlcl9wcm9maWxlcyBBUyAsNjQsMTgzLGI5MDJhYTA5LTg5MjctNDI1Zi05MWIwLThlNGNiY2Ux&#xa;ZGE0Mjs="/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Postgres/SistemaVeterinario"/>
-    <style name="Zebra">
-        <conditionalStyle mode="Opaque" forecolor="#050404" backcolor="#CFCACA">
-            <conditionExpression><![CDATA[$V{REPORT_COUNT} %2 == 0]]></conditionExpression>
+    <style name="Zebra" mode="Opaque" forecolor="#1F1D1D" backcolor="#cccaca">
+        <conditionalStyle mode="Opaque" forecolor="#1F1D1D" backcolor="#f3f0f5">
+            <conditionExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></conditionExpression>
         </conditionalStyle>
     </style>
     <query language="SQL"><![CDATA[SELECT id,
@@ -53,7 +53,8 @@ FROM user_profiles]]></query>
     <pageHeader height="36" splitType="Stretch"/>
     <columnHeader height="40" splitType="Stretch">
         <element kind="staticText" uuid="c326bda8-d576-431d-8154-736e9953186e" mode="Opaque" x="50" y="10" width="30" height="30" forecolor="#FFFFFF" backcolor="#100B75" fontName="Arial" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-            <text><![CDATA[Code]]></text>
+            <box leftPadding="5"/>
+            <text><![CDATA[ID]]></text>
             <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="db41a321-2356-4c05-9a99-6f3e8172017a"/>
         </element>
         <element kind="staticText" uuid="2b9c8c50-fa2f-4e58-96d9-97558fb98123" mode="Opaque" x="80" y="10" width="120" height="30" forecolor="#FFFFFF" backcolor="#100B75" fontName="Arial" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
@@ -74,27 +75,21 @@ FROM user_profiles]]></query>
         </element>
     </columnHeader>
     <detail>
-        <band height="50" splitType="Stretch">
-            <element kind="textField" uuid="17f1f37f-5a81-4bde-a479-e22a6a39f59b" mode="Opaque" x="50" y="0" width="30" height="30" backcolor="#DBD3D3" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
+        <band height="30" splitType="Stretch">
+            <element kind="textField" uuid="17f1f37f-5a81-4bde-a479-e22a6a39f59b" mode="Opaque" x="50" y="0" width="30" height="30" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
                 <expression><![CDATA[$F{id}]]></expression>
-                <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="db41a321-2356-4c05-9a99-6f3e8172017a"/>
             </element>
-            <element kind="textField" uuid="f9c7f3e9-7468-485c-9563-f98d097014b4" mode="Opaque" x="80" y="0" width="120" height="30" backcolor="#DBD3D3" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
+            <element kind="textField" uuid="f9c7f3e9-7468-485c-9563-f98d097014b4" mode="Opaque" x="80" y="0" width="120" height="30" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
                 <expression><![CDATA[$F{name}]]></expression>
-                <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bbce7fdf-1783-4077-a063-36cc67b972b3"/>
             </element>
-            <element kind="textField" uuid="654eada3-cb8a-442d-87d5-179b76f4ef72" mode="Opaque" x="200" y="0" width="130" height="30" backcolor="#DBD3D3" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
+            <element kind="textField" uuid="654eada3-cb8a-442d-87d5-179b76f4ef72" mode="Opaque" x="200" y="0" width="130" height="30" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
                 <expression><![CDATA[$F{email}]]></expression>
-                <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7be94878-6a93-4aad-87f2-154b3bdcd782"/>
             </element>
-            <element kind="textField" uuid="d7649c3d-102b-4417-8942-f247d7cd62fe" mode="Opaque" x="330" y="0" width="80" height="30" backcolor="#DBD3D3" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
-                <expression><![CDATA[$F{crmv_number} != null ? $F{crmv_number} : "-"
-]]></expression>
-                <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8ef35de6-10de-4abc-b5a4-9c3ecd27e701"/>
+            <element kind="textField" uuid="d7649c3d-102b-4417-8942-f247d7cd62fe" mode="Opaque" x="330" y="0" width="80" height="30" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
+                <expression><![CDATA[$F{crmv_number} != null ? $F{crmv_number} : "-" ]]></expression>
             </element>
-            <element kind="textField" uuid="0e9cdc50-9edf-4276-b367-854035173466" mode="Opaque" x="410" y="0" width="100" height="30" backcolor="#DBD3D3" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
-                <expression><![CDATA[$F{profile}]]></expression>
-                <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8dbf4499-732f-4d49-aa5b-6656ccb439c9"/>
+            <element kind="textField" uuid="0e9cdc50-9edf-4276-b367-854035173466" mode="Opaque" x="410" y="0" width="100" height="30" hTextAlign="Center" vTextAlign="Middle" style="Zebra">
+                <expression><![CDATA[$F{profile}.toString().equals("RECEPTION_STAFF") ? "RECEPTION" : $F{profile}.toString()]]></expression>
             </element>
         </band>
     </detail>
