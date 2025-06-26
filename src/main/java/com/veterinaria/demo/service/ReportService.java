@@ -36,4 +36,12 @@ public class ReportService {
     public byte[] generateAllUsersReport(List<User> users) throws JRException {
         return generateReport("/reports/user/AllUsersReport.jrxml", users, null);
     }
+
+    public byte[] generateVeterinariansReport(List<User> veterinarians) throws JRException {
+        return generateReport("/reports/user/VeterinariansReport.jrxml", veterinarians, null);
+    }
+
+    public byte[] generateReceptionStaffReport(List<User> receptionStaff) throws JRException {
+        return generateReport("/reports/user/ReceptionStaffReport.jrxml", receptionStaff, null);
+    }
 }

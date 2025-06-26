@@ -1,5 +1,6 @@
 package com.veterinaria.demo.controller;
 
+import com.veterinaria.demo.enums.UserProfile;
 import com.veterinaria.demo.model.entity.User;
 import com.veterinaria.demo.repository.UserRepository;
 import com.veterinaria.demo.service.ReportService;
@@ -34,4 +35,32 @@ public class ReportController {
                 .body(pdf);
 
     }
+
+    @GetMapping("/veterinarians")
+    public ResponseEntity<byte[]> generateVeterinariansReport() throws JRException {
+        List<User> veterinarians = userRepository.findByFilter("", "", UserProfile.VETERINARIAN); // OK!
+        byte[] pdf = reportService.generateVeterinariansReport(veterinarians);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
+    @GetMapping("/staff")
+    public ResponseEntity<byte[]> generateReceptionStaffReport() throws JRException {
+        List<User> receptionStaff = userRepository.findByFilter("", "", UserProfile.RECEPTION_STAFF);
+
+        // DEBUG: imprimir para ver se veio algo
+        System.out.println("Usuários encontrados: " + receptionStaff.size());
+        receptionStaff.forEach(u -> System.out.println(u.getName() + " - " + u.getProfile()));
+
+        byte[] pdf = reportService.generateReceptionStaffReport(receptionStaff);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
 }
