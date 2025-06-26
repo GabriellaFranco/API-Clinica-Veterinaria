@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .hasAnyRole("VETERINARIAN", "RECEPTION", "ADMIN")
                         .requestMatchers("/customers","/customers/**").hasAnyRole("RECEPTION", "ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/users", "/users/**").hasRole("ADMIN")
-                        .requestMatchers("/login", "/system-error-reason", "/reports", "/reports/**").permitAll()
+                        .requestMatchers( "/reports", "/reports/**").authenticated()
+                        .requestMatchers("/login", "/system-error-reason").permitAll()
                 )
                 .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(performanceLoggingFilter, UsernamePasswordAuthenticationFilter.class);

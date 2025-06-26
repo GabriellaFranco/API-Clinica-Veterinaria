@@ -12,7 +12,8 @@
 	email,
 	name,
 	profile
-FROM user_profiles]]></query>
+FROM user_profiles
+WHERE profile = 'RECEPTION_STAFF']]></query>
     <field name="id" class="java.lang.Long">
         <property name="com.jaspersoft.studio.field.name" value="id"/>
         <property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -44,7 +45,7 @@ FROM user_profiles]]></query>
     <background splitType="Stretch"/>
     <title height="146" splitType="Stretch">
         <element kind="staticText" uuid="c1295824-378e-468c-b003-bbff9544bb2c" x="137" y="116" width="280" height="30" fontName="Arial" fontSize="22.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-            <text><![CDATA[USER REPORT]]></text>
+            <text><![CDATA[STAFF REPORT]]></text>
         </element>
         <element kind="image" uuid="1c0a3ab3-350b-42f6-a59f-1365f31e6938" x="10" y="10" width="157" height="106">
             <expression><![CDATA["https://crazyleafdesign.com/blog/wp-content/uploads/2016/10/f6bca011212375.560f3d3a480f6-600x365.png"]]></expression>
