@@ -1,5 +1,6 @@
 package com.veterinaria.demo.service;
 
+import com.veterinaria.demo.model.entity.Customer;
 import com.veterinaria.demo.model.entity.User;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -43,5 +44,9 @@ public class ReportService {
 
     public byte[] generateReceptionStaffReport(List<User> receptionStaff) throws JRException {
         return generateReport("/reports/user/ReceptionStaffReport.jrxml", receptionStaff, null);
+    }
+
+    public byte[] generateAllCustomersReport(List<Customer> customers) throws JRException {
+        return generateReport("/reports/customer/AllCustomersReport.jrxml", customers, null);
     }
 }
