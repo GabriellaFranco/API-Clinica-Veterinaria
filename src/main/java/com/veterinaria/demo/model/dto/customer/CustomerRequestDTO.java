@@ -1,16 +1,17 @@
 package com.veterinaria.demo.model.dto.customer;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
-public record CreateCustomerDTO(
+public record CustomerRequestDTO(
 
-        @Size(min = 4)
-        @NotNull
+        @Size(min = 4, message = "The name must have at least 4 characters")
+        @NotNull @NotBlank
         @Column(nullable = false)
         String name,
 

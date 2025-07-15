@@ -1,9 +1,14 @@
 package com.veterinaria.demo.service;
 
 import com.veterinaria.demo.enums.ProcedureType;
+import com.veterinaria.demo.enums.UserProfile;
+import com.veterinaria.demo.exception.BusinessException;
+import com.veterinaria.demo.exception.OperationNotAllowedException;
 import com.veterinaria.demo.exception.ResourceNotFoundException;
-import com.veterinaria.demo.model.dto.procedure.CreateProcedureDTO;
-import com.veterinaria.demo.model.dto.procedure.GetProcedureDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureRequestDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureResponseDTO;
+import com.veterinaria.demo.model.dto.procedure.ProcedureUpdateDTO;
+import com.veterinaria.demo.model.entity.Procedure;
 import com.veterinaria.demo.model.mapper.ProcedureMapper;
 import com.veterinaria.demo.repository.AnimalRepository;
 import com.veterinaria.demo.repository.ProcedureRepository;
@@ -12,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,52 +31,74 @@ public class ProcedureService {
     private final UserRepository userRepository;
     private final ProcedureMapper procedureMapper;
 
-    public List<GetProcedureDTO> getAllProcedures() {
-        return procedureRepository.findAll().stream().map(procedureMapper::toGetProcedureDTO).toList();
+    public List<ProcedureResponseDTO> getAllProcedures() {
+        return procedureRepository.findAll().stream().map(procedureMapper::toProcedureResponseDTO).toList();
     }
 
-    public GetProcedureDTO getProcedureById(Long id) {
-        return procedureRepository.findById(id).map(procedureMapper::toGetProcedureDTO)
+    public ProcedureResponseDTO getProcedureById(Long id) {
+        return procedureRepository.findById(id).map(procedureMapper::toProcedureResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Procedure not found: " + id));
     }
 
-    public List<GetProcedureDTO> getAllProceduresByType(String type) {
-        var procedureType = parseProcedureType(type);
-        return procedureRepository.findByType(procedureType).stream().map(procedureMapper::toGetProcedureDTO).toList();
-    }
+    public List<ProcedureResponseDTO> getProceduresByFilter(ProcedureType type, LocalDate date, Long animalId,
+                                                            Long veterinarianId) {
 
-    public List<GetProcedureDTO> getAllProceduresByVeterinarianId(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Veterinarian not found: " + id);
-        }
-        return procedureRepository.findByVeterinarianId(id).stream().map(procedureMapper::toGetProcedureDTO).toList();
-    }
-
-    public List<GetProcedureDTO> getAllProceduresByAnimalId(Long id) {
-        if (!animalRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Animal not found: " + id);
-        }
-        return procedureRepository.findByAnimalId(id).stream().map(procedureMapper::toGetProcedureDTO).toList();
+        return procedureRepository.findByFilter(type, date, animalId, veterinarianId)
+                .stream().map(procedureMapper::toProcedureResponseDTO).toList();
     }
 
     @Transactional
-    public GetProcedureDTO createProcedure(CreateProcedureDTO procedureDTO) {
+    public ProcedureResponseDTO createProcedure(ProcedureRequestDTO procedureDTO) {
         var animal = animalRepository.findById(procedureDTO.animalId().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Animal not found:" + procedureDTO.animalId().getId()));
         var veterinarian = userRepository.findById(procedureDTO.veterinarianId().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + procedureDTO.veterinarianId().getId()));
 
         var procedureMapped = procedureMapper.toProcedure(procedureDTO, veterinarian, animal);
+        validateDuplicatedProcedure(procedureMapped);
+        validateVeterinarian(procedureMapped);
         var procedureSaved = procedureRepository.save(procedureMapped);
 
-        return procedureMapper.toGetProcedureDTO(procedureSaved);
+        return procedureMapper.toProcedureResponseDTO(procedureSaved);
     }
 
-    private ProcedureType parseProcedureType(String type) {
-        try {
-            return ProcedureType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException exc) {
-            throw new ResourceNotFoundException("Procedure type not found: " + type);
+    @Transactional
+    public ProcedureResponseDTO updateProcedure(Long id, ProcedureUpdateDTO procedureDTO) {
+        var procedure = procedureRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Procedure not found: " + id));
+
+        applyUpdate(procedure, procedureDTO);
+        var updatedProcedure = procedureRepository.save(procedure);
+        return procedureMapper.toProcedureResponseDTO(updatedProcedure);
+    }
+
+    @Transactional
+    public void deleteProcedure(Long id) {
+        var procedure = procedureRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Procedure not found: " + id));
+        procedureRepository.delete(procedure);
+    }
+
+    private void applyUpdate(Procedure procedure, ProcedureUpdateDTO procedureDTO) {
+        Optional.ofNullable(procedureDTO.description())
+                .filter(description -> !description.isBlank())
+                .ifPresent(procedure::setDescription);
+
+        Optional.ofNullable(procedureDTO.price())
+                .filter(price -> price.compareTo(BigDecimal.ZERO) > 0)
+                .ifPresent(procedure::setPrice);
+    }
+
+    private void validateDuplicatedProcedure(Procedure procedure) {
+        var exists = procedureRepository.existsByAnimalIdAndDate(procedure.getAnimal().getId(), procedure.getDate());
+        if (exists) {
+            throw new OperationNotAllowedException("This animal already has a procedure scheduled at this date and time");
+        }
+    }
+
+    private void validateVeterinarian(Procedure procedure) {
+        if (!procedure.getVeterinarian().getProfile().equals(UserProfile.VETERINARIAN)) {
+            throw new BusinessException("Only veterinarians can be assigned to a procedure");
         }
     }
 

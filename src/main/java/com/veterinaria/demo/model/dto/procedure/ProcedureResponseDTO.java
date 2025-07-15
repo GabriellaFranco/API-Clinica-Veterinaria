@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
-public record GetProcedureDTO(
+public record ProcedureResponseDTO(
         Long id,
         ProcedureType type,
         LocalDateTime date,
